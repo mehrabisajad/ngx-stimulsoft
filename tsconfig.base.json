@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es5",
+    "module": "es2015",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "paths": {
+      "ngx-stimulsoft": [
+        "dist/ngx-stimulsoft/ngx-stimulsoft",
+        "dist/ngx-stimulsoft"
+      ]
+    }
+  }
+}
