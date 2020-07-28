@@ -1,16 +1,11 @@
-import {ModuleWithProviders, NgModule} from '@angular/core';
-import {ISource, NgxSourceService} from 'ngx-source';
+import {NgModule} from '@angular/core';
 import {StimulsoftDesignerComponent} from './stimulsoft-designer.component';
-import {DefaultStimulantSourceStore} from './stimulsoft-source.store';
+import {StimulsoftViewerComponent} from './stimulsoft-viewer.component';
 
 @NgModule({
-  declarations: [StimulsoftDesignerComponent],
-  entryComponents: [StimulsoftDesignerComponent],
-  exports: [StimulsoftDesignerComponent],
+  declarations: [StimulsoftDesignerComponent, StimulsoftViewerComponent],
+  entryComponents: [StimulsoftDesignerComponent, StimulsoftViewerComponent],
+  exports: [StimulsoftDesignerComponent, StimulsoftViewerComponent],
 })
 export class NgxStimulsoftModule {
-
-  constructor(private sourceService: NgxSourceService) {
-
-  }
 }
