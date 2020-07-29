@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgxSourceService} from 'ngx-source';
 import {StimulsoftSourceName} from './stimulsoft-source-name.model';
-import {DefaultStimulantSourceStore} from './stimulsoft-source.store';
+import {StimulsoftService} from './stimulsoft.service';
 
 declare var Stimulsoft: any;
 
@@ -10,8 +10,9 @@ declare var Stimulsoft: any;
   template: `<div id="stimulsoft-viewer"></div>`,
 })
 export class StimulsoftViewerComponent implements OnInit {
-  constructor(public sourceService: NgxSourceService) {
-    this.sourceService.addSources(...DefaultStimulantSourceStore);
+  constructor(protected stimulsoftService: StimulsoftService,
+              public sourceService: NgxSourceService) {
+    this.sourceService.addSources(...stimulsoftService.stimulsoftSourceStore);
   }
 
   public async ngOnInit(): Promise<void> {
