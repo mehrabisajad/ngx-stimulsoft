@@ -9,6 +9,6 @@
   "references": [
     {
       "path": "./projects/ngx-stimulsoft/tsconfig.lib.json"
-    },
+    }
 ]
 }
