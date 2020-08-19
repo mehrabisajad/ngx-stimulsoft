@@ -74,34 +74,39 @@ export class StimulsoftViewerComponent implements OnInit, OnChanges {
 
   protected load(): void {
 
-    // set fonts
-    if (this.fonts && typeof (this.fonts) === 'object') {
-      for (const [key, value] of Object.entries(this.fonts)) {
-        if (key && value) {
-          try {
-            Stimulsoft.Base.StiFontCollection.addOpentypeFontFile(value, key);
-          } catch (e) {
-            console.log('can`t load font: ' + value);
+    if (this.stimulsoftOptions &&
+      this.stimulsoftViewer &&
+      this.stimulsoftReport) {
+
+      // set fonts
+      if (this.fonts && typeof (this.fonts) === 'object') {
+        for (const [key, value] of Object.entries(this.fonts)) {
+          if (key && value) {
+            try {
+              Stimulsoft.Base.StiFontCollection.addOpentypeFontFile(value, key);
+            } catch (e) {
+              console.log('can`t load font: ' + value);
+            }
           }
         }
       }
-    }
 
-    // set mrt file
-    if (this.fileName) {
-      this.stimulsoftReport.loadFile((this.baseUrl ? this.baseUrl : '') + this.fileName);
-    }
+      // set mrt file
+      if (this.fileName) {
+        this.stimulsoftReport.loadFile((this.baseUrl ? this.baseUrl : '') + this.fileName);
+      }
 
-    if (this.dataSet) {
-      const dataSet = new Stimulsoft.System.Data.DataSet('DataSet');
-      const strJson = JSON.stringify(this.dataSet);
-      dataSet.readJson(strJson);
-      this.stimulsoftReport.dictionary.databases.clear();
-      this.stimulsoftReport.regData('DataSet', 'DataSet', dataSet);
-    }
+      if (this.dataSet) {
+        const dataSet = new Stimulsoft.System.Data.DataSet('DataSet');
+        const strJson = JSON.stringify(this.dataSet);
+        dataSet.readJson(strJson);
+        this.stimulsoftReport.dictionary.databases.clear();
+        this.stimulsoftReport.regData('DataSet', 'DataSet', dataSet);
+      }
 
-    this.stimulsoftViewer.report = this.stimulsoftReport;
-    this.stimulsoftViewer.renderHtml('stimulsoft-viewer');
+      this.stimulsoftViewer.report = this.stimulsoftReport;
+      this.stimulsoftViewer.renderHtml('stimulsoft-viewer');
+    }
   }
 
 }
