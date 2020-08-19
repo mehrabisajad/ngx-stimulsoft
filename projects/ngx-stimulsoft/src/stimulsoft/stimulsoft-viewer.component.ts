@@ -76,7 +76,8 @@ export class StimulsoftViewerComponent implements OnInit, OnChanges {
 
     if (this.stimulsoftOptions &&
       this.stimulsoftViewer &&
-      this.stimulsoftReport) {
+      this.stimulsoftReport &&
+      this.fileName && this.dataSet) {
 
       // set fonts
       if (this.fonts && typeof (this.fonts) === 'object') {
