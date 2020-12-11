@@ -34,7 +34,10 @@ export class StimulsoftViewerComponent implements OnInit, OnChanges {
     await this.sourceService.loadBySourceName(StimulsoftSourceName.CSS_STIMULSOFT_VIEWER);
     await this.sourceService.loadBySourceName(StimulsoftSourceName.STIMULSOFT_REPORTER);
     await this.sourceService.loadBySourceName(StimulsoftSourceName.STIMULSOFT_VIEWER);
+    this.initStimulsoft();
+  }
 
+  private initStimulsoft(): void {
     this.stimulsoftOptions = new Stimulsoft.Viewer.StiViewerOptions();
     this.stimulsoftViewer = new Stimulsoft.Viewer.StiViewer(this.stimulsoftOptions, 'StiViewer', false);
     this.stimulsoftReport = new Stimulsoft.Report.StiReport();
@@ -46,11 +49,9 @@ export class StimulsoftViewerComponent implements OnInit, OnChanges {
   public ngOnChanges(changes: { [propKey: string]: SimpleChange }): void {
     if ((changes.mrtFileLocation && !changes.mrtFileLocation.isFirstChange()) ||
       (changes.fonts && !changes.fonts.isFirstChange()) ||
-      (changes.dataSet && !changes.dataSet.isFirstChange())) {
-      this.load();
-    }
-    if (changes.options && !changes.options.isFirstChange()) {
-      this.setOptions();
+      (changes.dataSet && !changes.dataSet.isFirstChange()) ||
+      (changes.options && !changes.options.isFirstChange())) {
+      this.initStimulsoft();
     }
   }
 
