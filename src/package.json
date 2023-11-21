@@ -1,0 +1,34 @@
+{
+  "name": "ngx-stimulsoft",
+  "version": "13.0.1",
+  "author": "Sajad Mehrabi",
+  "description": "Angular reporter for stimulsoftJS",
+  "license": "MIT",
+  "keywords": [
+    "ngx",
+    "ng",
+    "nga",
+    "avan",
+    "angular",
+    "stimulsoft",
+    "reporter",
+    "library",
+    "ngx stimulsoft",
+    "angular reporters",
+    "avan reporter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mehrabisajad/ngx-stimulsoft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mehrabisajad/ngx-stimulsoft/issues"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "ngx-source": "13.0.2"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=13"
+  }
+}

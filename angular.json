@@ -4,44 +4,37 @@
   "newProjectRoot": "projects",
   "projects": {
     "ngx-stimulsoft": {
+      "root": "",
+      "sourceRoot": "src",
       "projectType": "library",
-      "root": "projects/ngx-stimulsoft",
-      "sourceRoot": "projects/ngx-stimulsoft/src",
-      "prefix": "ngx",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ngx-stimulsoft/tsconfig.lib.json",
-            "project": "projects/ngx-stimulsoft/ng-package.json"
+            "project": "src/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngx-stimulsoft/tsconfig.lib.prod.json"
+              "tsConfig": "src/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "src/tsconfig.lib.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-stimulsoft/src/test.ts",
-            "tsConfig": "projects/ngx-stimulsoft/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-stimulsoft/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ngx-stimulsoft/tsconfig.lib.json",
-              "projects/ngx-stimulsoft/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "main": "src/test.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "karmaConfig": "src/karma.conf.js"
           }
         }
       }
-    }},
-  "defaultProject": "ngx-stimulsoft"
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
 }

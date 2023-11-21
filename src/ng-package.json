@@ -1,0 +1,9 @@
+{
+  "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../dist",
+  "allowedNonPeerDependencies": ["ngx-source"],
+  "lib": {
+    "flatModuleFile": "ngx-stimulsoft",
+    "entryFile": "public-api.ts"
+  }
+}
