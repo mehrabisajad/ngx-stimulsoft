@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChange } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
 import { NgxSourceService } from 'ngx-source';
 import { IStimulsoftOption } from './config';
 import { StimulsoftSourceName } from './stimulsoft-source-name.model';
@@ -16,6 +16,7 @@ export class StimulsoftViewerComponent implements OnInit, OnChanges {
   @Input() public fonts?: object;
   @Input() public dataSet?: any;
   @Input() public options?: IStimulsoftOption;
+  @Output() public ready = new EventEmitter<boolean>();
 
   private stimulsoftOptions: any;
   private stimulsoftViewer: any;
@@ -35,6 +36,7 @@ export class StimulsoftViewerComponent implements OnInit, OnChanges {
     await this.sourceService.loadBySourceName(StimulsoftSourceName.CSS_STIMULSOFT_VIEWER);
     await this.sourceService.loadBySourceName(StimulsoftSourceName.STIMULSOFT_REPORTER);
     await this.sourceService.loadBySourceName(StimulsoftSourceName.STIMULSOFT_VIEWER);
+    this.ready.emit(true);
     this.initStimulsoft();
   }
 
