@@ -3,7 +3,6 @@
   "dest": "../dist",
   "allowedNonPeerDependencies": ["ngx-source"],
   "lib": {
-    "flatModuleFile": "ngx-stimulsoft",
     "entryFile": "public-api.ts"
   }
 }

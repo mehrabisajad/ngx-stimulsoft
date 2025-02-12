@@ -105,7 +105,7 @@ export interface IStimulsoftConfig {
   stimulsoftReportsJsUrl: string;
   stimulsoftViewerCssUrl: string;
   stimulsoftViewerJsUrl: string;
-  fonts?: object;
+  fonts?: Record<string, string>;
   options?: IStimulsoftOption;
 }
 
