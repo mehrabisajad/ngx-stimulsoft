@@ -16,7 +16,6 @@ declare let Stimulsoft: any;
 export class StimulsoftViewerComponent implements OnInit {
   stimulsoftService = inject(StimulsoftService);
   sourceService = inject(NgxSourceService);
-  private document = inject(DOCUMENT);
 
   id = input<string>(UniqueComponentId());
   baseUrl = input<string | undefined>(this.stimulsoftService.baseUrl);
@@ -26,7 +25,10 @@ export class StimulsoftViewerComponent implements OnInit {
   options = input<IStimulsoftOption | undefined>(this.stimulsoftService.options);
   ready = output<boolean>();
   isLoadedSource = signal(false);
+  licenseKey = input<string | undefined>(undefined);
+  licenseFile = input<string | undefined>(undefined);
 
+  private document = inject(DOCUMENT);
   private stimulsoftOptions: any;
   private stimulsoftViewer: any;
   private stimulsoftReport: any;
@@ -35,7 +37,17 @@ export class StimulsoftViewerComponent implements OnInit {
     this.sourceService.addSources(...this.stimulsoftService.stimulsoftSourceStore);
 
     effect(() => {
-      const _ = [this.isLoadedSource(), this.options(), this.fonts(), this.dataSet(), this.fileName(), this.id()];
+      // eslint-disable-next-line
+      const _ = [
+        this.isLoadedSource(),
+        this.options(),
+        this.fonts(),
+        this.dataSet(),
+        this.fileName(),
+        this.id(),
+        this.licenseKey(),
+        this.licenseFile(),
+      ];
       this.initStimulsoft();
     });
   }
@@ -45,18 +57,6 @@ export class StimulsoftViewerComponent implements OnInit {
     await this.sourceService.loadBySourceName(StimulsoftSourceName.STIMULSOFT_REPORTER);
     await this.sourceService.loadBySourceName(StimulsoftSourceName.STIMULSOFT_VIEWER);
     this.isLoadedSource.set(true);
-  }
-
-  private initStimulsoft(): void {
-    this.ready.emit(false);
-    if (this.isLoadedSource()) {
-      this.stimulsoftOptions = new Stimulsoft.Viewer.StiViewerOptions();
-      this.stimulsoftViewer = new Stimulsoft.Viewer.StiViewer(this.stimulsoftOptions, 'StiViewer', false);
-      this.stimulsoftReport = new Stimulsoft.Report.StiReport();
-
-      this.setOptions();
-      this.load();
-    }
   }
 
   protected setOptions(): void {
@@ -82,6 +82,7 @@ export class StimulsoftViewerComponent implements OnInit {
       this.applyFont();
       this.loadFile();
       this.applyDataSet();
+      this.setLicense();
 
       this.stimulsoftViewer.report = this.stimulsoftReport;
       const element = this.document.getElementById(this.id());
@@ -94,23 +95,34 @@ export class StimulsoftViewerComponent implements OnInit {
     }
   }
 
-  private applyFont() {
-    // set fonts
+  private initStimulsoft(): void {
+    this.ready.emit(false);
+    if (this.isLoadedSource()) {
+      this.stimulsoftOptions = new Stimulsoft.Viewer.StiViewerOptions();
+      this.stimulsoftViewer = new Stimulsoft.Viewer.StiViewer(this.stimulsoftOptions, 'StiViewer', false);
+      this.stimulsoftReport = new Stimulsoft.Report.StiReport();
+
+      this.setOptions();
+      this.load();
+    }
+  }
+
+  private applyFont(): void {
     const fonts = this.fonts();
     if (fonts && typeof fonts === 'object') {
-      for (const [key, value] of Object.entries(fonts ?? {})) {
+      for (const [key, value] of Object.entries(fonts)) {
         if (key && value) {
           try {
             Stimulsoft.Base.StiFontCollection.addOpentypeFontFile(value, key);
-          } catch (e) {
-            console.log('can`t load font: ' + value);
+          } catch {
+            console.error('can`t load font: ' + value);
           }
         }
       }
     }
   }
 
-  private applyDataSet() {
+  private applyDataSet(): void {
     if (this.dataSet()) {
       const dataSet = new Stimulsoft.System.Data.DataSet('DataSet');
       const strJson = JSON.stringify(this.dataSet());
@@ -120,12 +132,20 @@ export class StimulsoftViewerComponent implements OnInit {
     }
   }
 
-  private loadFile() {
+  private setLicense(): void {
+    if (this.licenseKey()) {
+      Stimulsoft.Base.StiLicense.Key = this.licenseKey();
+    } else if (this.licenseFile()) {
+      Stimulsoft.Base.StiLicense.loadFromFile(this.licenseFile());
+    }
+  }
+
+  private loadFile(): void {
     // set mrt file
     const filename = this.fileName();
     if (filename) {
       const baseUrl = this.baseUrl();
-      this.stimulsoftReport.loadFile((baseUrl ? baseUrl : '') + filename);
+      this.stimulsoftReport.loadFile((baseUrl ?? '') + filename);
     }
   }
 }
