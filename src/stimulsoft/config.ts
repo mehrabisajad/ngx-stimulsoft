@@ -2,6 +2,8 @@ import { InjectionToken } from '@angular/core';
 
 export interface IStimulsoftOption {
   appearance?: {
+    backgroundColor?: any;
+    pageBorderColor?: any;
     rightToLeft?: boolean;
     fullScreenMode?: boolean;
     scrollbarsMode?: boolean;
@@ -9,6 +11,7 @@ export interface IStimulsoftOption {
     openExportedReportWindow?: string;
     showTooltips?: boolean;
     showTooltipsHelp?: boolean;
+    showDialogsHelp?: boolean;
     pageAlignment?: number;
     showPageShadow?: boolean;
     bookmarksPrint?: boolean;
@@ -17,49 +20,42 @@ export interface IStimulsoftOption {
     parametersPanelMaxHeight?: number;
     parametersPanelColumnsCount?: number;
     parametersPanelDateFormat?: string;
+    parametersPanelSortDataItems?: boolean;
     interfaceType?: number;
     chartRenderType?: number;
     reportDisplayMode?: number;
     datePickerFirstDayOfWeek?: number;
+    datePickerIncludeCurrentDayForRanges?: boolean;
     allowTouchZoom?: boolean;
+    allowMobileMode?: boolean;
+    combineReportPages?: boolean;
     htmlRenderMode?: number;
+    theme?: number;
   };
   exports?: {
     storeExportSettings?: boolean;
     showExportDialog?: boolean;
     showExportToDocument?: boolean;
     showExportToPdf?: boolean;
-    showExportToXps?: boolean;
-    showExportToPowerPoint?: boolean;
     showExportToHtml?: boolean;
     showExportToHtml5?: boolean;
-    showExportToMht?: boolean;
-    showExportToText?: boolean;
-    showExportToRtf?: boolean;
     showExportToWord2007?: boolean;
-    showExportToOpenDocumentWriter?: boolean;
-    showExportToExcel?: boolean;
-    showExportToExcelXml?: boolean;
     showExportToExcel2007?: boolean;
-    showExportToOpenDocumentCalc?: boolean;
     showExportToCsv?: boolean;
-    showExportToDbf?: boolean;
-    showExportToXml?: boolean;
-    showExportToDif?: boolean;
-    showExportToSylk?: boolean;
-    showExportToImageBmp?: boolean;
-    showExportToImageGif?: boolean;
-    showExportToImageJpeg?: boolean;
-    showExportToImagePcx?: boolean;
-    showExportToImagePng?: boolean;
-    showExportToImageTiff?: boolean;
-    showExportToImageMetafile?: boolean;
+    showExportToJson?: boolean;
+    showExportToText?: boolean;
+    showExportToOpenDocumentWriter?: boolean;
+    showExportToOpenDocumentCalc?: boolean;
+    showExportToPowerPoint?: boolean;
     showExportToImageSvg?: boolean;
-    showExportToImageSvgz?: boolean;
+    showExportToXps?: boolean;
   };
   toolbar?: {
     visible?: boolean;
     displayMode?: number;
+    backgroundColor?: any;
+    borderColor?: any;
+    fontColor?: any;
     fontFamily?: string;
     alignment?: number;
     showButtonCaptions?: boolean;
@@ -70,8 +66,10 @@ export interface IStimulsoftOption {
     showFindButton?: boolean;
     showBookmarksButton?: boolean;
     showParametersButton?: boolean;
+    showResourcesButton?: boolean;
     showEditorButton?: boolean;
     showFullScreenButton?: boolean;
+    showRefreshButton?: boolean;
     showFirstPageButton?: boolean;
     showPreviousPageButton?: boolean;
     showCurrentPageControl?: boolean;
@@ -91,7 +89,13 @@ export interface IStimulsoftOption {
     showMenuMode?: number;
     autoHide?: boolean;
   };
-
+  email?: {
+    showEmailDialog?: boolean;
+    showExportDialog?: boolean;
+    defaultEmailAddress?: string;
+    defaultEmailSubject?: string;
+    defaultEmailMessage?: string;
+  };
   width?: string;
   height?: string;
   viewerId?: string;
