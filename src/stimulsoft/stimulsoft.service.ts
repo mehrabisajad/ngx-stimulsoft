@@ -5,56 +5,47 @@ import { StimulsoftSourceName } from './stimulsoft-source-name.model';
 
 @Injectable()
 export class StimulsoftService {
-  public stimulsoftDesignerCssUrl: IStimulsoftConfig['stimulsoftDesignerCssUrl'];
-  public stimulsoftViewerCssUrl: IStimulsoftConfig['stimulsoftViewerCssUrl'];
-  public stimulsoftDesignerJsUrl: IStimulsoftConfig['stimulsoftDesignerJsUrl'];
-  public stimulsoftReportsJsUrl: IStimulsoftConfig['stimulsoftReportsJsUrl'];
-  public stimulsoftViewerJsUrl: IStimulsoftConfig['stimulsoftViewerJsUrl'];
-  public options: IStimulsoftConfig['options'];
-  public fonts: IStimulsoftConfig['fonts'];
-  public baseUrl: IStimulsoftConfig['baseUrl'];
+  public readonly stimulsoftDesignerCssUrl: string;
+  public readonly stimulsoftViewerCssUrl: string;
+  public readonly stimulsoftDesignerJsUrl: string;
+  public readonly stimulsoftReportsJsUrl: string;
+  public readonly stimulsoftViewerJsUrl: string;
+  public readonly options: IStimulsoftConfig['options'];
+  public readonly fonts: IStimulsoftConfig['fonts'];
+  public readonly baseUrl: string | undefined;
 
-  public constructor(@Inject(config) protected stimulsoftConfig: IStimulsoftConfig) {
-    this.stimulsoftDesignerCssUrl = this.stimulsoftConfig.stimulsoftDesignerCssUrl;
-    this.stimulsoftViewerCssUrl = this.stimulsoftConfig.stimulsoftViewerCssUrl;
-    this.stimulsoftDesignerJsUrl = this.stimulsoftConfig.stimulsoftDesignerJsUrl;
-    this.stimulsoftReportsJsUrl = this.stimulsoftConfig.stimulsoftReportsJsUrl;
-    this.stimulsoftViewerJsUrl = this.stimulsoftConfig.stimulsoftViewerJsUrl;
-    this.options = this.stimulsoftConfig.options;
-    this.fonts = this.stimulsoftConfig.fonts;
-    this.baseUrl = this.stimulsoftConfig.baseUrl;
+  constructor(@Inject(config) public readonly stimulsoftConfig: IStimulsoftConfig) {
+    const {
+      stimulsoftDesignerCssUrl,
+      stimulsoftViewerCssUrl,
+      stimulsoftDesignerJsUrl,
+      stimulsoftReportsJsUrl,
+      stimulsoftViewerJsUrl,
+      options,
+      fonts,
+      baseUrl,
+    } = stimulsoftConfig;
+
+    this.stimulsoftDesignerCssUrl = stimulsoftDesignerCssUrl || initialStimulsoftConfig.stimulsoftDesignerCssUrl;
+    this.stimulsoftViewerCssUrl = stimulsoftViewerCssUrl || initialStimulsoftConfig.stimulsoftViewerCssUrl;
+    this.stimulsoftDesignerJsUrl = stimulsoftDesignerJsUrl || initialStimulsoftConfig.stimulsoftDesignerJsUrl;
+    this.stimulsoftReportsJsUrl = stimulsoftReportsJsUrl || initialStimulsoftConfig.stimulsoftReportsJsUrl;
+    this.stimulsoftViewerJsUrl = stimulsoftViewerJsUrl || initialStimulsoftConfig.stimulsoftViewerJsUrl;
+    this.options = options;
+    this.fonts = fonts;
+    this.baseUrl = baseUrl;
   }
 
   public get stimulsoftSourceStore(): ISource[] {
-    return [
-      new Source(
-        StimulsoftSourceName.STIMULSOFT_DESIGNER,
-        this.stimulsoftDesignerJsUrl ? this.stimulsoftDesignerJsUrl : initialStimulsoftConfig.stimulsoftDesignerJsUrl,
-        SourceType.SCRIPT,
-      ),
-
-      new Source(
-        StimulsoftSourceName.STIMULSOFT_REPORTER,
-        this.stimulsoftReportsJsUrl ? this.stimulsoftReportsJsUrl : initialStimulsoftConfig.stimulsoftReportsJsUrl,
-        SourceType.SCRIPT,
-      ),
-
-      new Source(
-        StimulsoftSourceName.STIMULSOFT_VIEWER,
-        this.stimulsoftViewerJsUrl ? this.stimulsoftViewerJsUrl : initialStimulsoftConfig.stimulsoftViewerJsUrl,
-        SourceType.SCRIPT,
-      ),
-
-      new Source(
-        StimulsoftSourceName.CSS_STIMULSOFT_DESIGNER,
-        this.stimulsoftDesignerCssUrl ? this.stimulsoftDesignerCssUrl : initialStimulsoftConfig.stimulsoftDesignerCssUrl,
-        SourceType.STYLE,
-      ),
-      new Source(
-        StimulsoftSourceName.CSS_STIMULSOFT_VIEWER,
-        this.stimulsoftViewerCssUrl ? this.stimulsoftViewerCssUrl : initialStimulsoftConfig.stimulsoftViewerCssUrl,
-        SourceType.STYLE,
-      ),
-    ];
+    const { STYLE, SCRIPT } = SourceType;
+    return (
+      [
+        [StimulsoftSourceName.STIMULSOFT_DESIGNER, this.stimulsoftDesignerJsUrl, SCRIPT],
+        [StimulsoftSourceName.STIMULSOFT_REPORTER, this.stimulsoftReportsJsUrl, SCRIPT],
+        [StimulsoftSourceName.STIMULSOFT_VIEWER, this.stimulsoftViewerJsUrl, SCRIPT],
+        [StimulsoftSourceName.CSS_STIMULSOFT_DESIGNER, this.stimulsoftDesignerCssUrl, STYLE],
+        [StimulsoftSourceName.CSS_STIMULSOFT_VIEWER, this.stimulsoftViewerCssUrl, STYLE],
+      ] as Array<[StimulsoftSourceName, string, SourceType]>
+    ).map(([name, url, type]) => new Source(name, url, type));
   }
 }

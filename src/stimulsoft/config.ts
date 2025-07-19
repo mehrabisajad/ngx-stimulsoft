@@ -111,6 +111,8 @@ export interface IStimulsoftConfig {
   stimulsoftViewerJsUrl: string;
   fonts?: Record<string, string>;
   options?: IStimulsoftOption;
+  licenseKey?: string;
+  licenseFile?: string;
 }
 
 export type OptionsConfig = Partial<IStimulsoftConfig>;
