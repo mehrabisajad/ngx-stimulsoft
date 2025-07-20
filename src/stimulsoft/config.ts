@@ -102,13 +102,15 @@ export interface IStimulsoftOption {
   reportDesignerMode?: false;
 }
 
+export type ResourceUrl = string | string[];
+
 export interface IStimulsoftConfig {
   baseUrl?: string;
-  stimulsoftDesignerCssUrl: string;
-  stimulsoftDesignerJsUrl: string;
-  stimulsoftReportsJsUrl: string;
-  stimulsoftViewerCssUrl: string;
-  stimulsoftViewerJsUrl: string;
+  stimulsoftDesignerCssUrl: ResourceUrl;
+  stimulsoftDesignerJsUrl: ResourceUrl;
+  stimulsoftReportsJsUrl: ResourceUrl;
+  stimulsoftViewerCssUrl: ResourceUrl;
+  stimulsoftViewerJsUrl: ResourceUrl;
   fonts?: Record<string, string>;
   options?: IStimulsoftOption;
   licenseKey?: string;

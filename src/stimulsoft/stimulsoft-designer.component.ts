@@ -7,7 +7,8 @@ declare let Stimulsoft: any;
 
 @Component({
   selector: 'ngx-stimulsoft-designer',
-  template: ` <div [id]="elementId"></div>`,
+  template: `<div [id]="elementId"></div>`,
+  standalone: true,
 })
 export class StimulsoftDesignerComponent implements OnInit {
   licenseKey = input<string | undefined>();

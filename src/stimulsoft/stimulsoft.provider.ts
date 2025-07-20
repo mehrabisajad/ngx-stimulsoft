@@ -1,8 +1,9 @@
 import { config, INITIAL_CONFIG, initialStimulsoftConfig, NEW_CONFIG, OptionsConfig } from './config';
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { StimulsoftService } from './stimulsoft.service';
+import { NgxSourceService } from 'ngx-source';
 
-function configFactory(initConfig: OptionsConfig, configValue?: OptionsConfig | (() => OptionsConfig)): OptionsConfig {
+export function configFactory(initConfig: OptionsConfig, configValue?: OptionsConfig | (() => OptionsConfig)): OptionsConfig {
   return {
     ...initConfig,
     ...(typeof configValue === 'function' ? configValue() : (configValue ?? {})),
@@ -11,6 +12,7 @@ function configFactory(initConfig: OptionsConfig, configValue?: OptionsConfig | 
 
 export function provideStimulsoft(configValue?: OptionsConfig | (() => OptionsConfig)): EnvironmentProviders {
   return makeEnvironmentProviders([
+    NgxSourceService,
     { provide: NEW_CONFIG, useValue: configValue },
     { provide: INITIAL_CONFIG, useValue: initialStimulsoftConfig },
     {

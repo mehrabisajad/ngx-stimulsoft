@@ -11,7 +11,8 @@ declare let Stimulsoft: any;
 
 @Component({
   selector: 'ngx-stimulsoft-viewer',
-  template: ` <div [id]="id()"></div>`,
+  template: `<div [id]="id()"></div>`,
+  standalone: true,
 })
 export class StimulsoftViewerComponent implements OnInit {
   readonly stimulsoftService = inject(StimulsoftService);

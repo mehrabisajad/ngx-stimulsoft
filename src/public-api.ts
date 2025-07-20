@@ -1,5 +1,5 @@
 export * from './stimulsoft/config';
-export * from './stimulsoft/stimulsoft.provider';
+export { provideStimulsoft } from './stimulsoft/stimulsoft.provider';
 export * from './stimulsoft/stimulsoft.module';
 export * from './stimulsoft/stimulsoft.service';
 export * from './stimulsoft/stimulsoft-designer.component';

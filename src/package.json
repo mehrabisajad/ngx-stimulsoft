@@ -1,6 +1,6 @@
 {
   "name": "ngx-stimulsoft",
-  "version": "18.0.1",
+  "version": "18.0.2",
   "author": "Sajad Mehrabi",
   "description": "Angular reporter for stimulsoftJS",
   "license": "MIT",
@@ -25,8 +25,8 @@
     "url": "https://github.com/mehrabisajad/ngx-stimulsoft/issues"
   },
   "dependencies": {
-    "tslib": "^2.7.0",
-    "ngx-source": "13.0.2"
+    "ngx-source": "^18.0.0",
+    "tslib": "^2.7.0"
   },
   "peerDependencies": {
     "@angular/core": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",

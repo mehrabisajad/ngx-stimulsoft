@@ -1,12 +1,11 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { OptionsConfig } from './config';
-import { StimulsoftDesignerComponent } from './stimulsoft-designer.component';
-import { StimulsoftViewerComponent } from './stimulsoft-viewer.component';
 import { provideStimulsoft } from './stimulsoft.provider';
 
 @NgModule({
-  declarations: [StimulsoftDesignerComponent, StimulsoftViewerComponent],
-  exports: [StimulsoftDesignerComponent, StimulsoftViewerComponent],
+  declarations: [],
+  exports: [],
+  providers: [],
 })
 export class NgxStimulsoftModule {
   static forRoot(configValue?: OptionsConfig | (() => OptionsConfig)): ModuleWithProviders<NgxStimulsoftModule> {
