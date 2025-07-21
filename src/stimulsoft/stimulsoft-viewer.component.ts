@@ -115,24 +115,34 @@ export class StimulsoftViewerComponent implements OnInit {
     this.loadReportFile();
     this.registerDataSet();
     this.applyLicense();
-
-    this.viewer.report = this.report;
+    this.setLocalizationFile();
 
     const targetElement = this.document.getElementById(this.id());
     if (targetElement) {
       this.ready.emit(true);
-      this.viewer.renderHtml(this.id());
+      this.report.renderAsync(() => {
+        this.viewer.report = this.report;
+        this.viewer.renderHtml(this.id());
+      });
     } else {
       console.warn(`Element with id "${this.id()}" not found.`);
     }
   }
 
+  private setLocalizationFile(): void {
+    if (this.stimulsoftService.localizationFile) {
+      const stiLocalization = Stimulsoft.Base.Localization.StiLocalization;
+      stiLocalization.cultureName = stiLocalization.loadLocalizationFile(this.stimulsoftService.localizationFile);
+    }
+  }
+
   private applyFonts(): void {
     const fonts = this.fonts();
+
     if (fonts) {
       for (const [name, url] of Object.entries(fonts)) {
         try {
-          Stimulsoft.Base.StiFontCollection.addOpentypeFontFile(url, name);
+          Stimulsoft.Base.StiFontCollection.addFontFile(url, name);
         } catch {
           console.error(`Can't load font: ${url}`);
         }

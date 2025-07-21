@@ -106,11 +106,12 @@ export type ResourceUrl = string | string[];
 
 export interface IStimulsoftConfig {
   baseUrl?: string;
-  stimulsoftDesignerCssUrl: ResourceUrl;
-  stimulsoftDesignerJsUrl: ResourceUrl;
-  stimulsoftReportsJsUrl: ResourceUrl;
-  stimulsoftViewerCssUrl: ResourceUrl;
-  stimulsoftViewerJsUrl: ResourceUrl;
+  designerCssUrl: ResourceUrl;
+  designerJsUrl: ResourceUrl;
+  reportsJsUrl: ResourceUrl;
+  viewerCssUrl: ResourceUrl;
+  viewerJsUrl: ResourceUrl;
+  localizationFile?: string;
   fonts?: Record<string, string>;
   options?: IStimulsoftOption;
   licenseKey?: string;
@@ -124,9 +125,9 @@ export const INITIAL_CONFIG: InjectionToken<IStimulsoftConfig> = new InjectionTo
 
 export const initialStimulsoftConfig: IStimulsoftConfig = {
   baseUrl: '',
-  stimulsoftDesignerCssUrl: '/content/css/stimulsoft.designer.office2013.whiteblue.css',
-  stimulsoftDesignerJsUrl: '/content/js/stimulsoft.designer.js',
-  stimulsoftReportsJsUrl: '/content/js/stimulsoft.reports.js',
-  stimulsoftViewerCssUrl: '/content/css/stimulsoft.viewer.office2013.whiteblue.css',
-  stimulsoftViewerJsUrl: '/content/js/stimulsoft.viewer.js',
+  designerCssUrl: '/content/css/stimulsoft.designer.office2013.whiteblue.css',
+  designerJsUrl: '/content/js/stimulsoft.designer.js',
+  reportsJsUrl: '/content/js/stimulsoft.reports.js',
+  viewerCssUrl: '/content/css/stimulsoft.viewer.office2013.whiteblue.css',
+  viewerJsUrl: '/content/js/stimulsoft.viewer.js',
 };
