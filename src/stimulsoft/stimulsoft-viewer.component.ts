@@ -59,12 +59,12 @@ export class StimulsoftViewerComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.loading.emit(true);
+    const sources = [StimulsoftSourceName.REPORTER_SCRIPT, StimulsoftSourceName.VIEWER_SCRIPT];
+    if (this.stimulsoftService.viewerCssUrl) {
+      sources.push(StimulsoftSourceName.VIEWER_STYLE);
+    }
     await this.sourceService
-      .loadBySourceNames(
-        StimulsoftSourceName.CSS_STIMULSOFT_VIEWER,
-        StimulsoftSourceName.STIMULSOFT_REPORTER,
-        StimulsoftSourceName.STIMULSOFT_VIEWER,
-      )
+      .loadBySourceNames(...sources)
       .then(() => this.isLoadedSource.set(true))
       .catch(error => {
         this.failResourcesDownload.set(true);

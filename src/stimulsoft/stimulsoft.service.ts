@@ -5,8 +5,8 @@ import { StimulsoftSourceName } from './stimulsoft-source-name.model';
 
 @Injectable()
 export class StimulsoftService {
-  public readonly designerCssUrl: ResourceUrl;
-  public readonly viewerCssUrl: ResourceUrl;
+  public readonly designerCssUrl?: ResourceUrl;
+  public readonly viewerCssUrl?: ResourceUrl;
   public readonly designerJsUrl: ResourceUrl;
   public readonly reportsJsUrl: ResourceUrl;
   public readonly viewerJsUrl: ResourceUrl;
@@ -19,8 +19,8 @@ export class StimulsoftService {
     const { designerCssUrl, viewerCssUrl, designerJsUrl, reportsJsUrl, viewerJsUrl, options, fonts, baseUrl, localizationFile } =
       stimulsoftConfig;
 
-    this.designerCssUrl = designerCssUrl || initialStimulsoftConfig.designerCssUrl;
-    this.viewerCssUrl = viewerCssUrl || initialStimulsoftConfig.viewerCssUrl;
+    this.designerCssUrl = designerCssUrl;
+    this.viewerCssUrl = viewerCssUrl;
     this.designerJsUrl = designerJsUrl || initialStimulsoftConfig.designerJsUrl;
     this.reportsJsUrl = reportsJsUrl || initialStimulsoftConfig.reportsJsUrl;
     this.viewerJsUrl = viewerJsUrl || initialStimulsoftConfig.viewerJsUrl;
@@ -32,15 +32,18 @@ export class StimulsoftService {
 
   public get stimulsoftSourceStore(): ISource[] {
     const { STYLE, SCRIPT } = SourceType;
-    return (
-      [
-        [StimulsoftSourceName.STIMULSOFT_DESIGNER, this.designerJsUrl, SCRIPT],
-        [StimulsoftSourceName.STIMULSOFT_REPORTER, this.reportsJsUrl, SCRIPT],
-        [StimulsoftSourceName.STIMULSOFT_VIEWER, this.viewerJsUrl, SCRIPT],
-        [StimulsoftSourceName.CSS_STIMULSOFT_DESIGNER, this.designerCssUrl, STYLE],
-        [StimulsoftSourceName.CSS_STIMULSOFT_VIEWER, this.viewerCssUrl, STYLE],
-      ] as Array<[StimulsoftSourceName, ResourceUrl, SourceType]>
-    )
+    const sources: Array<[StimulsoftSourceName, ResourceUrl, SourceType]> = [
+      [StimulsoftSourceName.DESIGNER_SCRIPT, this.designerJsUrl, SCRIPT],
+      [StimulsoftSourceName.REPORTER_SCRIPT, this.reportsJsUrl, SCRIPT],
+      [StimulsoftSourceName.VIEWER_SCRIPT, this.viewerJsUrl, SCRIPT],
+    ];
+    if (this.designerCssUrl) {
+      sources.push([StimulsoftSourceName.DESIGNER_STYLE, this.designerCssUrl, STYLE]);
+    }
+    if (this.viewerCssUrl) {
+      sources.push([StimulsoftSourceName.VIEWER_STYLE, this.viewerCssUrl, STYLE]);
+    }
+    return sources
       .map(([name, url, type]) => (Array.isArray(url) ? url : [url]).map(u => new Source(name, u, type)))
       .reduce((resources, item) => [...resources, ...item], [] as ISource[]);
   }
