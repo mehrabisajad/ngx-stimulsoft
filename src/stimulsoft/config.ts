@@ -106,10 +106,10 @@ export type ResourceUrl = string | string[];
 
 export interface IStimulsoftConfig {
   baseUrl?: string;
-  designerCssUrl: ResourceUrl;
+  designerCssUrl?: ResourceUrl;
   designerJsUrl: ResourceUrl;
   reportsJsUrl: ResourceUrl;
-  viewerCssUrl: ResourceUrl;
+  viewerCssUrl?: ResourceUrl;
   viewerJsUrl: ResourceUrl;
   localizationFile?: string;
   fonts?: Record<string, string>;
@@ -125,9 +125,7 @@ export const INITIAL_CONFIG: InjectionToken<IStimulsoftConfig> = new InjectionTo
 
 export const initialStimulsoftConfig: IStimulsoftConfig = {
   baseUrl: '',
-  designerCssUrl: '/content/css/stimulsoft.designer.office2013.whiteblue.css',
   designerJsUrl: '/content/js/stimulsoft.designer.js',
   reportsJsUrl: '/content/js/stimulsoft.reports.js',
-  viewerCssUrl: '/content/css/stimulsoft.viewer.office2013.whiteblue.css',
   viewerJsUrl: '/content/js/stimulsoft.viewer.js',
 };

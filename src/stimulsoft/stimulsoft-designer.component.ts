@@ -24,14 +24,15 @@ export class StimulsoftDesignerComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    const sources = [StimulsoftSourceName.REPORTER_SCRIPT, StimulsoftSourceName.VIEWER_SCRIPT, StimulsoftSourceName.DESIGNER_SCRIPT];
+    if (this.stimulsoftService.viewerCssUrl) {
+      sources.push(StimulsoftSourceName.VIEWER_STYLE);
+    }
+    if (this.stimulsoftService.designerCssUrl) {
+      sources.push(StimulsoftSourceName.DESIGNER_STYLE);
+    }
     await this.sourceService
-      .loadBySourceNames(
-        StimulsoftSourceName.CSS_STIMULSOFT_DESIGNER,
-        StimulsoftSourceName.CSS_STIMULSOFT_VIEWER,
-        StimulsoftSourceName.STIMULSOFT_REPORTER,
-        StimulsoftSourceName.STIMULSOFT_VIEWER,
-        StimulsoftSourceName.STIMULSOFT_DESIGNER,
-      )
+      .loadBySourceNames(...sources)
       .catch((error: any) => console.error('Failed to initialize Stimulsoft Designer:', error));
     this.initializeDesigner(this.id());
   }
