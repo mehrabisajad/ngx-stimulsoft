@@ -111,7 +111,7 @@ export interface IStimulsoftConfig {
   reportsJsUrl: ResourceUrl;
   viewerCssUrl?: ResourceUrl;
   viewerJsUrl: ResourceUrl;
-  localizationFile?: string;
+  localizationPath?: string;
   fonts?: Record<string, string>;
   options?: IStimulsoftOption;
   licenseKey?: string;

@@ -13,10 +13,10 @@ export class StimulsoftService {
   public readonly options: IStimulsoftConfig['options'];
   public readonly fonts: IStimulsoftConfig['fonts'];
   public readonly baseUrl: string | undefined;
-  public readonly localizationFile: string | undefined;
+  public readonly localizationPath: string | undefined;
 
   constructor(@Inject(config) public readonly stimulsoftConfig: IStimulsoftConfig) {
-    const { designerCssUrl, viewerCssUrl, designerJsUrl, reportsJsUrl, viewerJsUrl, options, fonts, baseUrl, localizationFile } =
+    const { designerCssUrl, viewerCssUrl, designerJsUrl, reportsJsUrl, viewerJsUrl, options, fonts, baseUrl, localizationPath } =
       stimulsoftConfig;
 
     this.designerCssUrl = designerCssUrl;
@@ -24,7 +24,7 @@ export class StimulsoftService {
     this.designerJsUrl = designerJsUrl || initialStimulsoftConfig.designerJsUrl;
     this.reportsJsUrl = reportsJsUrl || initialStimulsoftConfig.reportsJsUrl;
     this.viewerJsUrl = viewerJsUrl || initialStimulsoftConfig.viewerJsUrl;
-    this.localizationFile = localizationFile;
+    this.localizationPath = localizationPath;
     this.options = options;
     this.fonts = fonts;
     this.baseUrl = baseUrl;
