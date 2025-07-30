@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { NgxSourceService } from 'ngx-source';
@@ -11,37 +11,47 @@ declare let Stimulsoft: any;
 
 @Component({
   selector: 'ngx-stimulsoft-viewer',
-  template: `<div [id]="id()"></div>`,
+  template: ` <div dir="ltr" [id]="id()"></div>`,
   standalone: true,
 })
-export class StimulsoftViewerComponent implements OnInit {
+export class StimulsoftViewerComponent {
   readonly stimulsoftService = inject(StimulsoftService);
   readonly sourceService = inject(NgxSourceService);
   readonly document = inject(DOCUMENT);
 
-  id = input<string>(UniqueComponentId());
-  baseUrl = input<string | undefined>(this.stimulsoftService.baseUrl);
-  fileName = input.required<string>();
-  fonts = input<Record<string, string> | undefined>(this.stimulsoftService.fonts);
-  dataSet = input.required<any>();
-  options = input<IStimulsoftOption | undefined>(this.stimulsoftService.options);
-  licenseKey = input<string | undefined>();
-  licenseFile = input<string | undefined>();
-  ready = output<boolean>();
-  onLoadResourceFailed = output<{ source: string; error: any }>();
-  isLoadedSource = signal(false);
-  loading = output<boolean>();
+  readonly id = input<string>(UniqueComponentId());
+  readonly baseUrl = input<string | undefined>(this.stimulsoftService.baseUrl);
+  readonly fileName = input.required<string>();
+  readonly fonts = input<Record<string, string> | undefined>(this.stimulsoftService.fonts);
+  readonly dataSet = input.required<any>();
+  readonly options = input<IStimulsoftOption | undefined>(this.stimulsoftService.options);
+  readonly licenseKey = input<string | undefined>();
+  readonly licenseFile = input<string | undefined>();
+  readonly local = input<string>('en');
+  readonly dir = input<'ltr' | 'rtl'>('ltr');
+
+  readonly ready = output<boolean>();
+  readonly loading = output<boolean>();
+  readonly onLoadResourceFailed = output<{ source: string; error: any }>();
 
   private viewerOptions: any;
   private viewer: any;
   private report: any;
-  private failResourcesDownload = signal<boolean>(false);
+
+  private readonly isLoadedSource = signal(false);
+  private readonly failResourcesDownload = signal<boolean>(false);
+
+  private readonly canInitialize = computed(
+    () => this.isLoadedSource() && !this.failResourcesDownload() && !!this.fileName() && !!this.dataSet(),
+  );
 
   constructor() {
     this.sourceService.addSources(...this.stimulsoftService.stimulsoftSourceStore);
 
+    this.loadResources().then();
+
     effect(() => {
-      if (this.isLoadedSource() && !this.failResourcesDownload()) {
+      if (this.canInitialize()) {
         // eslint-disable-next-line
         const dependencies = [
           this.options(),
@@ -51,45 +61,54 @@ export class StimulsoftViewerComponent implements OnInit {
           this.id(),
           this.licenseKey(),
           this.licenseFile(),
+          this.local(),
+          this.dir(),
         ];
         this.initializeViewer();
       }
     });
   }
 
-  async ngOnInit(): Promise<void> {
+  private async loadResources(): Promise<void> {
     this.loading.emit(true);
     const sources = [StimulsoftSourceName.REPORTER_SCRIPT, StimulsoftSourceName.VIEWER_SCRIPT];
+
     if (this.stimulsoftService.viewerCssUrl) {
       sources.push(StimulsoftSourceName.VIEWER_STYLE);
     }
-    await this.sourceService
-      .loadBySourceNames(...sources)
-      .then(() => this.isLoadedSource.set(true))
-      .catch(error => {
-        this.failResourcesDownload.set(true);
-        this.onLoadResourceFailed.emit(error);
-      })
-      .finally(() => this.loading.emit(false));
-  }
 
-  private initializeViewer(): void {
-    if (typeof Stimulsoft !== 'undefined') {
-      this.ready.emit(false);
-
-      this.viewerOptions = new Stimulsoft.Viewer.StiViewerOptions();
-      this.viewer = new Stimulsoft.Viewer.StiViewer(this.viewerOptions, 'StiViewer', false);
-      this.report = new Stimulsoft.Report.StiReport();
-
-      this.applyOptions();
-      this.setupReport();
-    } else {
-      this.onLoadResourceFailed.emit({ error: 'Stimulsoft undefined', source: 'Unknown' });
+    try {
+      await this.sourceService.loadBySourceNames(...sources);
+      this.isLoadedSource.set(true);
+    } catch (error) {
+      this.failResourcesDownload.set(true);
+      this.onLoadResourceFailed.emit({ source: 'stimulsoft', error });
+    } finally {
+      this.loading.emit(false);
     }
   }
 
+  private initializeViewer(): void {
+    if (typeof Stimulsoft === 'undefined') {
+      this.onLoadResourceFailed.emit({ error: 'Stimulsoft undefined', source: 'global' });
+      return;
+    }
+
+    this.ready.emit(false);
+
+    this.viewerOptions = new Stimulsoft.Viewer.StiViewerOptions();
+    this.viewerOptions.appearance.rightToLeft = this.dir() === 'rtl';
+    this.viewer = new Stimulsoft.Viewer.StiViewer(this.viewerOptions, 'StiViewer', false);
+    this.report = new Stimulsoft.Report.StiReport();
+
+    this.applyOptions();
+    this.setupReport();
+  }
+
   private applyOptions(): void {
-    this.deepMerge(this.options(), this.viewerOptions);
+    const options = this.options();
+    this.deepMerge(this.stimulsoftService.options, options);
+    this.deepMerge(options, this.viewerOptions);
   }
 
   private deepMerge(source: any, target: any): void {
@@ -107,7 +126,7 @@ export class StimulsoftViewerComponent implements OnInit {
   }
 
   private setupReport(): void {
-    if (!this.viewerOptions || !this.viewer || !this.report || !this.fileName() || !this.dataSet()) {
+    if (!this.viewerOptions || !this.viewer || !this.report) {
       return;
     }
 
@@ -115,64 +134,79 @@ export class StimulsoftViewerComponent implements OnInit {
     this.loadReportFile();
     this.registerDataSet();
     this.applyLicense();
-    this.setLocalizationFile();
+    this.setLocale();
 
     const targetElement = this.document.getElementById(this.id());
-    if (targetElement) {
-      this.ready.emit(true);
-      this.report.renderAsync(() => {
-        this.viewer.report = this.report;
-        this.viewer.renderHtml(this.id());
-      });
-    } else {
+    if (!targetElement) {
       console.warn(`Element with id "${this.id()}" not found.`);
+      return;
     }
-  }
 
-  private setLocalizationFile(): void {
-    if (this.stimulsoftService.localizationFile) {
-      const stiLocalization = Stimulsoft.Base.Localization.StiLocalization;
-      stiLocalization.cultureName = stiLocalization.loadLocalizationFile(this.stimulsoftService.localizationFile);
-    }
+    this.ready.emit(true);
+    this.report.renderAsync(() => {
+      this.viewer.report = this.report;
+      this.viewer.renderHtml(this.id());
+    });
   }
 
   private applyFonts(): void {
     const fonts = this.fonts();
-
-    if (fonts) {
-      for (const [name, url] of Object.entries(fonts)) {
-        try {
-          Stimulsoft.Base.StiFontCollection.addFontFile(url, name);
-        } catch {
-          console.error(`Can't load font: ${url}`);
-        }
+    if (!fonts) {
+      return;
+    }
+    for (const [name, url] of Object.entries(fonts)) {
+      try {
+        Stimulsoft.Base.StiFontCollection.addFontFile(url, name);
+      } catch {
+        console.error(`Can't load font: ${url}`);
       }
     }
   }
 
   private registerDataSet(): void {
     const json = this.dataSet();
-    if (json) {
-      const dataSet = new Stimulsoft.System.Data.DataSet('DataSet');
-      dataSet.readJson(JSON.stringify(json));
-      this.report.dictionary.databases.clear();
-      this.report.regData('DataSet', 'DataSet', dataSet);
+    if (!json) {
+      return;
     }
+    const dataSet = new Stimulsoft.System.Data.DataSet('DataSet');
+    dataSet.readJson(JSON.stringify(json));
+    this.report.dictionary.databases.clear();
+    this.report.regData('DataSet', 'DataSet', dataSet);
   }
 
   private applyLicense(): void {
-    if (this.licenseKey() || this.stimulsoftService.stimulsoftConfig.licenseKey) {
-      Stimulsoft.Base.StiLicense.Key = this.licenseKey() ?? this.stimulsoftService.stimulsoftConfig.licenseKey;
-    } else if (this.licenseFile() || this.stimulsoftService.stimulsoftConfig.licenseFile) {
-      Stimulsoft.Base.StiLicense.loadFromFile(this.licenseFile() ?? this.stimulsoftService.stimulsoftConfig.licenseFile);
+    const key = this.licenseKey() ?? this.stimulsoftService.stimulsoftConfig.licenseKey;
+    const file = this.licenseFile() ?? this.stimulsoftService.stimulsoftConfig.licenseFile;
+
+    if (key) {
+      Stimulsoft.Base.StiLicense.Key = key;
+    } else if (file) {
+      Stimulsoft.Base.StiLicense.loadFromFile(file);
     }
   }
 
   private loadReportFile(): void {
     const name = this.fileName();
-    if (name) {
-      const base = this.baseUrl() ?? '';
-      this.report.loadFile(base + name);
+    if (!name) {
+      return;
+    }
+
+    const base = this.baseUrl() ?? '';
+    this.report.loadFile(base + name);
+  }
+
+  private setLocale(): void {
+    if (!this.stimulsoftService.localizationPath) {
+      return;
+    }
+    const local = this.local();
+    const stiLocalization = Stimulsoft.Base.Localization.StiLocalization;
+
+    if (local === 'en') {
+      stiLocalization.cultureName = 'English';
+    } else {
+      const path = [this.stimulsoftService.localizationPath.replace(/\/$/g, ''), `${local}.xml`].join('/');
+      stiLocalization.cultureName = stiLocalization.loadLocalizationFile(path);
     }
   }
 }
