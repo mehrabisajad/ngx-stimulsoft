@@ -18,7 +18,6 @@ export class StimulsoftDesignerComponent {
   readonly local = input<string>('en');
 
   readonly onLoadResourceFailed = output<{ source: string; error: any }>();
-  readonly loading = output<boolean>();
 
   private readonly sourceService = inject(NgxSourceService);
   private readonly stimulsoftService = inject(StimulsoftService);
@@ -40,8 +39,6 @@ export class StimulsoftDesignerComponent {
   }
 
   private async loadResources(): Promise<void> {
-    this.loading.emit(true);
-
     const sources = [StimulsoftSourceName.REPORTER_SCRIPT, StimulsoftSourceName.VIEWER_SCRIPT, StimulsoftSourceName.DESIGNER_SCRIPT];
 
     if (this.stimulsoftService.viewerCssUrl) {
@@ -57,8 +54,6 @@ export class StimulsoftDesignerComponent {
     } catch (error) {
       this.failResourcesDownload.set(true);
       this.onLoadResourceFailed.emit({ source: 'stimulsoft', error });
-    } finally {
-      this.loading.emit(false);
     }
   }
 

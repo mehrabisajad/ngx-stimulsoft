@@ -31,7 +31,6 @@ export class StimulsoftViewerComponent {
   readonly dir = input<'ltr' | 'rtl'>('ltr');
 
   readonly ready = output<boolean>();
-  readonly loading = output<boolean>();
   readonly onLoadResourceFailed = output<{ source: string; error: any }>();
 
   private viewerOptions: any;
@@ -70,7 +69,6 @@ export class StimulsoftViewerComponent {
   }
 
   private async loadResources(): Promise<void> {
-    this.loading.emit(true);
     const sources = [StimulsoftSourceName.REPORTER_SCRIPT, StimulsoftSourceName.VIEWER_SCRIPT];
 
     if (this.stimulsoftService.viewerCssUrl) {
@@ -83,8 +81,6 @@ export class StimulsoftViewerComponent {
     } catch (error) {
       this.failResourcesDownload.set(true);
       this.onLoadResourceFailed.emit({ source: 'stimulsoft', error });
-    } finally {
-      this.loading.emit(false);
     }
   }
 
