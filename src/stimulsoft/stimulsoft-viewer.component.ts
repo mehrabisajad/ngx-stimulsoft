@@ -85,7 +85,7 @@ export class StimulsoftViewerComponent {
   }
 
   private initializeViewer(): void {
-    if (typeof Stimulsoft === 'undefined') {
+    if (typeof Stimulsoft === 'undefined' || typeof Stimulsoft.Viewer === 'undefined') {
       this.onLoadResourceFailed.emit({ error: 'Stimulsoft undefined', source: 'global' });
       return;
     }
